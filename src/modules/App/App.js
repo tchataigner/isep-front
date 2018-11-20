@@ -12,20 +12,30 @@ import { setWeb3 } from './AppActions';
 import { getWeb3 } from './AppReducer.js';
 
 class App extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {account: null}
+    }
+
+    async componentDidUpdate(prevProps, prevState) {
+        let accounts = await this.props.web3.eth.getAccounts();
+        if(prevState.account !== accounts[0]){
+            this.setState({account: accounts[0]});
+        }
+    }
 
     componentDidMount() {
         this.props.setWeb3();
     }
 
     render() {
-        console.log(this)
         return (
             <BrowserRouter>
                 <div className="App">
                     <header className="App-header">
                         <img src={logo} className="App-logo" alt="logo" />
                         <p>
-                            aaa
+                            Let's start to dev' this {this.state.account}!
                         </p>
                         <a
                             className="App-link"
@@ -40,6 +50,10 @@ class App extends Component {
             </BrowserRouter>
         );
     }
+}
+
+App.propTypes = {
+    web3: PropTypes.object.isRequired
 }
 
 const mapStateToProps = (store, ownProps) => {
